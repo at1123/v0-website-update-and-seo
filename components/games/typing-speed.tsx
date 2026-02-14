@@ -9,7 +9,7 @@ const words = [
 ]
 
 export function TypingSpeed() {
-  const [currentWord, setCurrentWord] = useState(() => words[Math.floor(Math.random() * words.length)])
+  const [currentWord, setCurrentWord] = useState(words[0])
   const [input, setInput] = useState("")
   const [score, setScore] = useState(0)
   const [timeLeft, setTimeLeft] = useState(15)

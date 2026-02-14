@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 
 const EMOJIS = ["A", "B", "C", "D", "E", "F", "G", "H"]
 
@@ -13,7 +13,9 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-function createBoard() {
+type Card = { id: number; symbol: string; flipped: boolean; matched: boolean }
+
+function createBoard(): Card[] {
   return shuffle([...EMOJIS, ...EMOJIS]).map((symbol, i) => ({
     id: i,
     symbol,
@@ -22,11 +24,23 @@ function createBoard() {
   }))
 }
 
+// Stable initial board for SSR (unshuffled, will be replaced on mount)
+const INITIAL_BOARD: Card[] = [...EMOJIS, ...EMOJIS].map((symbol, i) => ({
+  id: i,
+  symbol,
+  flipped: false,
+  matched: false,
+}))
+
 export function MemoryMatch() {
-  const [cards, setCards] = useState(createBoard)
+  const [cards, setCards] = useState<Card[]>(INITIAL_BOARD)
   const [selected, setSelected] = useState<number[]>([])
   const [moves, setMoves] = useState(0)
   const [locked, setLocked] = useState(false)
+
+  useEffect(() => {
+    setCards(createBoard())
+  }, [])
 
   const matched = cards.filter((c) => c.matched).length
 

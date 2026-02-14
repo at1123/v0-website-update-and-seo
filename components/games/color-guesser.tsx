@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 
 function randomColor() {
   const r = Math.floor(Math.random() * 256)
@@ -15,15 +15,24 @@ function generateOptions(correct: { hex: string }) {
     const c = randomColor().hex
     if (!options.includes(c)) options.push(c)
   }
-  // shuffle
   return options.sort(() => Math.random() - 0.5)
 }
 
+const INITIAL_COLOR = { r: 100, g: 150, b: 200, hex: "#6496c8" }
+
 export function ColorGuesser() {
-  const [color, setColor] = useState(randomColor)
-  const [options, setOptions] = useState(() => generateOptions(color))
+  const [mounted, setMounted] = useState(false)
+  const [color, setColor] = useState(INITIAL_COLOR)
+  const [options, setOptions] = useState<string[]>([INITIAL_COLOR.hex, "#000000", "#ffffff"])
   const [result, setResult] = useState<"correct" | "wrong" | null>(null)
   const [score, setScore] = useState(0)
+
+  useEffect(() => {
+    const c = randomColor()
+    setColor(c)
+    setOptions(generateOptions(c))
+    setMounted(true)
+  }, [])
 
   const newRound = useCallback(() => {
     const c = randomColor()
