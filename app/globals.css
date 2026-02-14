@@ -95,3 +95,34 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+/* Selection highlight */
+::selection {
+  background: hsl(228 94% 67% / 0.3);
+  color: hsl(220 20% 91%);
+}
+
+/* Prevent overscroll bounce on mobile */
+body {
+  overscroll-behavior: none;
+}
+
+/* Text shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.text-shimmer {
+  background: linear-gradient(90deg, hsl(228 94% 67%) 0%, hsl(42 100% 50%) 50%, hsl(228 94% 67%) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}

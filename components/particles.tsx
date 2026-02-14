@@ -33,8 +33,9 @@ export function Particles() {
     resize()
     window.addEventListener("resize", resize)
 
-    // Create particles
-    const count = Math.min(60, Math.floor(window.innerWidth / 25))
+    // Create particles - fewer on mobile for performance
+    const isMobile = window.innerWidth < 768
+    const count = isMobile ? Math.min(20, Math.floor(window.innerWidth / 40)) : Math.min(50, Math.floor(window.innerWidth / 30))
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * canvas.width,
@@ -83,15 +84,16 @@ export function Particles() {
         ctx.fillStyle = `hsla(${p.hue}, 94%, 67%, ${p.opacity})`
         ctx.fill()
 
-        // Draw connections
+        // Draw connections (shorter distance on mobile)
+        const connDist = isMobile ? 100 : 150
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j]
           const d = Math.sqrt((p.x - p2.x) ** 2 + (p.y - p2.y) ** 2)
-          if (d < 150) {
+          if (d < connDist) {
             ctx.beginPath()
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(p2.x, p2.y)
-            ctx.strokeStyle = `hsla(228, 94%, 67%, ${0.06 * (1 - d / 150)})`
+            ctx.strokeStyle = `hsla(228, 94%, 67%, ${0.06 * (1 - d / connDist)})`
             ctx.lineWidth = 0.5
             ctx.stroke()
           }

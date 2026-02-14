@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 const navLinks = [
   { href: "#about", label: "About" },
   { href: "#skills", label: "Skills" },
-  { href: "#fun", label: "Fun" },
+  { href: "#fun", label: "Arcade" },
   { href: "#contact", label: "Contact" },
 ]
 
@@ -15,72 +15,58 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener("scroll", handleScroll)
+    window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
+  }, [mobileOpen])
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-background/90 backdrop-blur-xl border-b border-border shadow-lg shadow-primary/5"
+          ? "border-b border-border bg-background/90 shadow-lg shadow-primary/5 backdrop-blur-xl"
           : "bg-transparent"
       }`}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <a
-          href="#"
-          className="font-mono text-lg font-semibold text-primary transition-colors hover:text-accent"
-        >
-          {"Ahnaf_Tahsin{}"}
+      <nav className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
+        <a href="#" className="font-mono text-base font-semibold text-primary transition-colors hover:text-accent sm:text-lg">
+          {"<AhnafTahsin />"}
         </a>
 
-        {/* Desktop Nav */}
+        {/* Desktop */}
         <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
-              <a
-                href={link.href}
-                className="group relative text-sm text-muted-foreground transition-colors hover:text-foreground"
-              >
+              <a href={link.href} className="group relative text-sm text-muted-foreground transition-colors hover:text-foreground">
                 {link.label}
-                <span className="absolute -bottom-1 left-0 h-0.5 w-0 bg-primary transition-all duration-300 group-hover:w-full" />
+                <span className="absolute -bottom-1 left-0 h-0.5 w-0 rounded-full bg-primary transition-all duration-300 group-hover:w-full" />
               </a>
             </li>
           ))}
         </ul>
 
         {/* Mobile hamburger */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="flex flex-col gap-1.5 md:hidden"
-          aria-label="Toggle menu"
-        >
-          <span
-            className={`h-0.5 w-6 bg-foreground transition-all duration-300 ${mobileOpen ? "translate-y-2 rotate-45" : ""}`}
-          />
-          <span
-            className={`h-0.5 w-6 bg-foreground transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`}
-          />
-          <span
-            className={`h-0.5 w-6 bg-foreground transition-all duration-300 ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`}
-          />
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden" aria-label="Toggle menu">
+          <span className={`h-0.5 w-5 rounded-full bg-foreground transition-all duration-300 ${mobileOpen ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`h-0.5 w-5 rounded-full bg-foreground transition-all duration-300 ${mobileOpen ? "scale-0 opacity-0" : ""}`} />
+          <span className={`h-0.5 w-5 rounded-full bg-foreground transition-all duration-300 ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </nav>
 
-      {/* Mobile menu */}
-      <div
-        className={`overflow-hidden transition-all duration-300 md:hidden ${
-          mobileOpen ? "max-h-64 border-b border-border" : "max-h-0"
-        }`}
-      >
-        <ul className="flex flex-col gap-4 bg-background/95 px-5 py-4 backdrop-blur-xl">
-          {navLinks.map((link) => (
-            <li key={link.href}>
+      {/* Full-screen mobile menu */}
+      <div className={`fixed inset-0 z-40 flex flex-col items-center justify-center bg-background/98 backdrop-blur-xl transition-all duration-300 md:hidden ${mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <ul className="flex flex-col items-center gap-8">
+          {navLinks.map((link, i) => (
+            <li key={link.href} className={`transition-all duration-300 ${mobileOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}`} style={{ transitionDelay: mobileOpen ? `${i * 80}ms` : "0ms" }}>
               <a
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="text-2xl font-semibold text-foreground transition-colors hover:text-primary"
               >
                 {link.label}
               </a>
